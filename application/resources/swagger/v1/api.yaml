@@ -1,0 +1,415 @@
+openapi: 3.0.3
+
+info:
+  title: Test api products
+  description: Описание API для работы
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Локальный сервер разработки с api версии v1
+
+tags:
+  - name: products
+    description: Методы работы с товарами
+  - name: categories
+    description: Методы работы с категориями
+
+paths:
+  /products:
+    get:
+      tags: [products]
+      summary: Возвращает список товаров
+      operationId: listProducts
+      parameters:
+        - name: filters[q]
+          in: query
+          schema: { type: string }
+        - name: filters[price_from]
+          in: query
+          schema: { type: number, format: float }
+        - name: filters[price_to]
+          in: query
+          schema: { type: number, format: float }
+        - name: filters[category_id]
+          in: query
+          schema: { type: integer }
+        - name: filters[in_stock]
+          in: query
+          schema: { type: boolean }
+        - name: filters[rating_from]
+          in: query
+          schema: { type: number, format: float }
+        - name: orders[price]
+          in: query
+          schema: { type: string, enum: [asc, desc] }
+        - name: orders[rating]
+          in: query
+          schema: { type: string, enum: [asc, desc] }
+        - name: orders[created_at]
+          in: query
+          schema: { type: string, enum: [asc, desc] }
+        - name: page
+          in: query
+          schema: { type: integer, example: 1 }
+        - name: perPage
+          in: query
+          schema: { type: integer, example: 20 }
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductsIndexResponse'
+    post:
+      tags: [products]
+      summary: Создает новый товар
+      operationId: createProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductUpsertRequest'
+      responses:
+        '201':
+          description: Товар создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSingleResponse'
+
+  /products/{product}:
+    get:
+      tags: [products]
+      summary: Возвращает товар по ID
+      operationId: showProduct
+      parameters:
+        - in: path
+          name: product
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSingleResponse'
+    put:
+      tags: [products]
+      summary: Полностью обновляет товар
+      operationId: updateProduct
+      parameters:
+        - in: path
+          name: product
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductUpsertRequest'
+      responses:
+        '200':
+          description: Товар обновлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSingleResponse'
+    patch:
+      tags: [products]
+      summary: Частично обновляет товар
+      operationId: patchProduct
+      parameters:
+        - in: path
+          name: product
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductPatchRequest'
+      responses:
+        '200':
+          description: Товар обновлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSingleResponse'
+    delete:
+      tags: [products]
+      summary: Удаляет товар
+      operationId: deleteProduct
+      parameters:
+        - in: path
+          name: product
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Товар удален
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEmptyResponse'
+
+  /categories:
+    get:
+      tags: [categories]
+      summary: Возвращает список категорий
+      operationId: listCategories
+      parameters:
+        - name: filters[q]
+          in: query
+          schema: { type: string }
+        - name: filters[parent_id]
+          in: query
+          schema: { type: integer }
+        - name: orders[name]
+          in: query
+          schema: { type: string, enum: [asc, desc] }
+        - name: orders[created_at]
+          in: query
+          schema: { type: string, enum: [asc, desc] }
+        - name: page
+          in: query
+          schema: { type: integer, example: 1 }
+        - name: perPage
+          in: query
+          schema: { type: integer, example: 20 }
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoriesIndexResponse'
+    post:
+      tags: [categories]
+      summary: Создает новую категорию
+      operationId: createCategory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryUpsertRequest'
+      responses:
+        '201':
+          description: Категория создана
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategorySingleResponse'
+
+  /categories/{category}:
+    get:
+      tags: [categories]
+      summary: Возвращает категорию по ID
+      operationId: showCategory
+      parameters:
+        - in: path
+          name: category
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategorySingleResponse'
+    put:
+      tags: [categories]
+      summary: Полностью обновляет категорию
+      operationId: updateCategory
+      parameters:
+        - in: path
+          name: category
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryUpsertRequest'
+      responses:
+        '200':
+          description: Категория обновлена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategorySingleResponse'
+    patch:
+      tags: [categories]
+      summary: Частично обновляет категорию
+      operationId: patchCategory
+      parameters:
+        - in: path
+          name: category
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryPatchRequest'
+      responses:
+        '200':
+          description: Категория обновлена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategorySingleResponse'
+    delete:
+      tags: [categories]
+      summary: Удаляет категорию
+      operationId: deleteCategory
+      parameters:
+        - in: path
+          name: category
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Категория удалена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEmptyResponse'
+
+components:
+  schemas:
+    Pagination:
+      type: object
+      properties:
+        page: { type: integer, example: 1 }
+        itemsCount: { type: integer, example: 100 }
+        pages: { type: integer, example: 5 }
+        perPage: { type: integer, example: 20 }
+        pageItemsCount: { type: integer, example: 20 }
+        next: { type: integer, nullable: true, example: 2 }
+        prev: { type: integer, nullable: true, example: null }
+
+    Category:
+      type: object
+      properties:
+        id: { type: integer }
+        parent_id: { type: integer, nullable: true }
+        alias: { type: string }
+        name: { type: string }
+        created_at: { type: string, example: '2026-04-26 00:15' }
+        updated_at: { type: string, example: '2026-04-26 00:15' }
+
+    Product:
+      type: object
+      properties:
+        id: { type: integer }
+        category:
+          $ref: '#/components/schemas/Category'
+        name: { type: string, example: iPhone 16 Pro }
+        price: { type: number, format: float, example: 1099.99 }
+        in_stock: { type: boolean, example: true }
+        rating: { type: number, format: float, example: 4.8 }
+        created_at: { type: string, example: '2026-04-26 00:15' }
+        updated_at: { type: string, example: '2026-04-26 00:15' }
+
+    ProductUpsertRequest:
+      type: object
+      required: [name, price, category_id, in_stock]
+      properties:
+        name: { type: string, maxLength: 255 }
+        price: { type: number, format: float, minimum: 0 }
+        category_id: { type: integer }
+        in_stock: { type: boolean }
+        rating: { type: number, format: float, minimum: 0, maximum: 5, nullable: true }
+
+    ProductPatchRequest:
+      type: object
+      properties:
+        name: { type: string, maxLength: 255 }
+        price: { type: number, format: float, minimum: 0 }
+        category_id: { type: integer }
+        in_stock: { type: boolean }
+        rating: { type: number, format: float, minimum: 0, maximum: 5, nullable: true }
+
+    CategoryUpsertRequest:
+      type: object
+      required: [alias, name]
+      properties:
+        parent_id: { type: integer, nullable: true }
+        alias: { type: string, maxLength: 255 }
+        name: { type: string, maxLength: 255 }
+
+    CategoryPatchRequest:
+      type: object
+      properties:
+        parent_id: { type: integer, nullable: true }
+        alias: { type: string, maxLength: 255 }
+        name: { type: string, maxLength: 255 }
+
+    ProductSingleResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        results:
+          $ref: '#/components/schemas/Product'
+
+    CategorySingleResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        results:
+          $ref: '#/components/schemas/Category'
+
+    ProductsIndexResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        results:
+          type: object
+          properties:
+            products:
+              type: array
+              items:
+                $ref: '#/components/schemas/Product'
+            filters:
+              type: object
+              nullable: true
+            orders:
+              type: object
+              nullable: true
+            pagination:
+              $ref: '#/components/schemas/Pagination'
+
+    CategoriesIndexResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        results:
+          type: object
+          properties:
+            categories:
+              type: array
+              items:
+                $ref: '#/components/schemas/Category'
+            filters:
+              type: object
+              nullable: true
+            orders:
+              type: object
+              nullable: true
+            pagination:
+              $ref: '#/components/schemas/Pagination'
+
+    SuccessEmptyResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
