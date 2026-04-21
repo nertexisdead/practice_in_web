@@ -1,0 +1,26 @@
+$__default-space: 5px;
+
+// _variables
+$font-size-root: 14px;
+$font-size-root-small: 13px;
+
+// _cards
+$card-title-spacer-y: 0rem;
+$card-cap-padding-y: 1rem;
+$card-cap-padding-x: 1rem;
+$card-padding-1: 0.25rem;
+
+
+// _tables
+$table-cell-padding-y: $__default-space;
+$table-cell-padding-x: $__default-space;
+
+// _navbar
+$navbar-padding-x: 2 * $__default-space;
+
+// _colors
+$green: #A8C82F;
+$success: $green;
+
+// _callout
+$callount-padding: .5rem;
