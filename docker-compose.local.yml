@@ -84,12 +84,45 @@ services:
         protocol: tcp
         mode: host
 
+  minio:
+    container_name: minio
+    image: minio/minio:latest
+    restart: unless-stopped
+
+    networks:
+      - practice_in_web_network
+
+    ports:
+      - target: 9000
+        published: 9000
+        protocol: tcp
+        mode: host
+
+      - target: 9001
+        published: 9001
+        protocol: tcp
+        mode: host
+
+    environment:
+      MINIO_ROOT_USER: test
+      MINIO_ROOT_PASSWORD: 12345678
+
+    volumes:
+      - source: practice_in_web_minio_data
+        target: /data
+        type: volume
+
+    command: server /data --console-address ":9001"
+
 volumes:
   practice_in_web_postgres_data:
     name: practice_in_web_postgres_data
     driver: local
   practice_in_web_pgadmin_data:
     name: practice_in_web_pgadmin_data
+    driver: local
+  practice_in_web_minio_data:
+    name: practice_in_web_minio_data
     driver: local
 
 networks:
